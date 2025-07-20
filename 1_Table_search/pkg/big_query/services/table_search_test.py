@@ -171,7 +171,7 @@ def main():
     print("BigQuery Data Dictionary Search Engine")
     print("=" * 50)
     
-    # Example queries
+
     test_queries = [
         "Where I can find the daily campaign plan data?",
         "Show me tables with sales information",
