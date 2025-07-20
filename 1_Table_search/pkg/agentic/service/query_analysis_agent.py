@@ -6,6 +6,8 @@ from domains.values.agent_status import AgentStatus
 from domains.models.agent_task import AgentTask
 from domains.services.base_agent import BaseAgent
 
+from domains.values.constant.agent_query_analysis_capability import AGENT_QUERY_ANALYSIS_CAPABILITY
+from domains.values.constant.agent_intent_pattern import AGENT_INTENT_PATTERN
 
 
 class QueryAnalysisAgent(BaseAgent):
@@ -13,21 +15,9 @@ class QueryAnalysisAgent(BaseAgent):
     def __init__(self):
         super().__init__(
             name="QueryAnalyzer",
-            capabilities=[
-                "query_understanding",
-                "intent_classification", 
-                "keyword_extraction",
-                "query_decomposition"
-            ]
-        )
-        self.intent_patterns = {
-            "table_search": ["find", "search", "locate", "where", "show", "list"],
-            "schema_inquiry": ["columns", "fields", "structure", "schema", "format"],
-            "data_discovery": ["explore", "discover", "available", "what data"],
-            "lineage_tracking": ["lineage", "source", "derived", "upstream", "downstream"],
-            "metadata_request": ["metadata", "description", "tags", "owner", "created"],
-            "performance_query": ["performance", "size", "rows", "usage", "frequency"]
-        }
+            capabilities=AGENT_QUERY_ANALYSIS_CAPABILITY)
+            
+        self.intent_patterns = AGENT_INTENT_PATTERN
     
     async def process_task(self, task: AgentTask) -> AgentTask:
         self.status = AgentStatus.WORKING
