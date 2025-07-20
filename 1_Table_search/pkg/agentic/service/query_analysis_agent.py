@@ -6,19 +6,26 @@ from domains.values.agent_status import AgentStatus
 from domains.models.agent_task import AgentTask
 from domains.services.base_agent import BaseAgent
 
+from domains.values.constant.agent_query_analysis_name import AGENT_QUERY_ANALYSIS_NAME
 from domains.values.constant.agent_query_analysis_capability import AGENT_QUERY_ANALYSIS_CAPABILITY
 from domains.values.constant.agent_intent_pattern import AGENT_INTENT_PATTERN
 
+from pkg.big_query.services.table_search import BQSearchTable
 
-class QueryAnalysisAgent(BaseAgent):
+
+class QueryAnalysisAgent(BaseAgent, BQSearchTable):
     
     def __init__(self):
-        super().__init__(
-            name="QueryAnalyzer",
-            capabilities=AGENT_QUERY_ANALYSIS_CAPABILITY)
+        BaseAgent.__init__(
+            self,
+            name=AGENT_QUERY_ANALYSIS_NAME,
+            capabilities=AGENT_QUERY_ANALYSIS_CAPABILITY
+        )
+
+        BQSearchTable.__init__(self)
 
         self.intent_patterns = AGENT_INTENT_PATTERN
-        
+
     
     async def process_task(self, task: AgentTask) -> AgentTask:
         self.status = AgentStatus.WORKING
@@ -26,7 +33,7 @@ class QueryAnalysisAgent(BaseAgent):
         try:
             query = task.input_data.get("query", "")
             intent = self._classify_intent(query)
-            keywords = self._extract_keywords(query)
+            keywords = self.extract_keywords(query)
             entities = self._extract_entities(query)
             
             sub_queries = self._decompose_query(query, intent)
@@ -66,19 +73,6 @@ class QueryAnalysisAgent(BaseAgent):
 
         return "general_search"
 
-    
-    def _extract_keywords(self, query: str) -> List[str]:
-        """Extract meaningful keywords from query"""
-        stop_words = {
-            'a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from',
-            'has', 'he', 'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the',
-            'to', 'was', 'were', 'will', 'with', 'where', 'can', 'find', 'i'
-        }
-        
-        words = re.findall(r'\b[a-zA-Z]+\b', query.lower())
-        keywords = [word for word in words if word not in stop_words and len(word) > 2]
-        
-        return keywords
     
     def _extract_entities(self, query: str) -> Dict[str, List[str]]:
         entities = {
