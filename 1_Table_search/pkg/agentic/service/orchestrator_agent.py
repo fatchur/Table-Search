@@ -10,7 +10,6 @@ from domains.models.agent_message import AgentMessage
 from domains.services.base_agent import BaseAgent
 from pkg.agentic.service.query_analysis_agent import QueryAnalysisAgent
 from pkg.agentic.service.data_search_agent import BQDataSearchAgent
-from pkg.agentic.service.metadata_agent import BQMetadataAgent
 from pkg.agentic.service.response_agent import ResponseGenerationAgent
 from pkg.big_query.services.table_search import BQSearchTable
 
@@ -29,7 +28,6 @@ class BQAgentOrchestrator:
     def _initialize_agents(self, search_engine: BQSearchTable):
         self.agents["QueryAnalyzer"] = QueryAnalysisAgent()
         self.agents["BQDataSearcher"] = BQDataSearchAgent(search_engine)
-        self.agents["BQMetadataManager"] = BQMetadataAgent()
         self.agents["ResponseGenerator"] = ResponseGenerationAgent()
         
         self.logger.info("All BigQuery agents initialized")
