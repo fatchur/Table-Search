@@ -53,8 +53,6 @@ class BQAgenticDataCatalogueInterface:
         print("Ask me anything about your BigQuery data catalogue!")
         print("Examples:")
         print("  • 'Find tables with daily campaign data'")
-        print("  • 'What's the schema of marketing.campaign_performance?'")
-        print("  • 'Show me metadata for sales tables'")
         print("  • 'Which tables contain user behavior data?'")
         print("\nType 'quit' to exit, 'help' for more commands")
         print("="*70)
