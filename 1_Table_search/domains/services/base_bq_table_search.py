@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 
 from domains.models.bigquery_table_info import BQTableInfo
 
-class BQDataDictionary(ABC): 
+class BaseBQSearchTable(ABC): 
     def __init__(self):
         self.tables: List[BQTableInfo] = []
         self.tables_keywords: list[Any] = []

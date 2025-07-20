@@ -4,10 +4,10 @@ import math
 from typing import List, Dict
 
 from domains.models.bigquery_table_info import BQTableInfo
-from domains.services.bigquery_data_dictionary import BQDataDictionary
+from domains.services.base_bq_table_search import BaseBQSearchTable
 
 
-class BQSearchTable(BQDataDictionary): 
+class BQSearchTable(BaseBQSearchTable): 
     def __init__(self): 
         super().__init__()
 

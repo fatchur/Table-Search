@@ -16,8 +16,9 @@ class QueryAnalysisAgent(BaseAgent):
         super().__init__(
             name="QueryAnalyzer",
             capabilities=AGENT_QUERY_ANALYSIS_CAPABILITY)
-            
+
         self.intent_patterns = AGENT_INTENT_PATTERN
+        
     
     async def process_task(self, task: AgentTask) -> AgentTask:
         self.status = AgentStatus.WORKING

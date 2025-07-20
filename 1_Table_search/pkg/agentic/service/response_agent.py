@@ -33,10 +33,6 @@ class ResponseGenerationAgent(BaseAgent):
             
             if intent == "table_search":
                 response = self._generate_table_search_response(original_query, search_results)
-            elif intent == "schema_inquiry":
-                response = self._generate_schema_response(original_query, search_results)
-            elif intent == "metadata_request":
-                response = self._generate_metadata_response(original_query, search_results)
             else:
                 response = self._generate_general_response(original_query, search_results)
             
@@ -80,63 +76,14 @@ class ResponseGenerationAgent(BaseAgent):
         return response
 
     
-    def _generate_schema_response(self, query: str, results: List[Dict]) -> str:
-        if not results:
-            return "No schema information found for your query."
-        
-        response = f"Here's the BigQuery schema information for '{query}':\n\n"
-        
-        for result in results:
-            table_name = result['table_name']
-            columns = result.get('columns', 0)
-            
-            response += f"**{table_name}**\n"
-            response += f"- Number of columns: {columns}\n"
-            response += f"- Description: {result['description']}\n"
-            
-            # Add schema details if available
-            if 'schema_analysis' in result:
-                schema = result['schema_analysis']
-                response += f"- Data types: {schema.get('data_types', 'N/A')}\n"
-            
-            response += "\n"
-        
-        return response
-
-    
-    def _generate_metadata_response(self, query: str, results: List[Dict]) -> str:
-        if not results:
-            return "No metadata found for your query."
-        
-        response = f"Here's the BigQuery metadata for '{query}':\n\n"
-        
-        for result in results:
-            response += f"**{result['table_name']}**\n"
-            response += f"- Last Modified: {result.get('last_modified', 'Unknown')}\n"
-            response += f"- Row Count: {result.get('row_count', 'Unknown'):,}\n"
-            response += f"- Data Freshness: {result.get('data_freshness', 'Unknown')}\n"
-            
-            if 'metadata' in result:
-                meta = result['metadata']
-                response += f"- Owner: {meta.get('owner', 'Unknown')}\n"
-                response += f"- Update Frequency: {meta.get('update_frequency', 'Unknown')}\n"
-            
-            response += "\n"
-        
-        return response
-
-    
     def _generate_general_response(self, query: str, results: List[Dict]) -> str:
         if not results:
             return f"I couldn't find specific BigQuery information for '{query}'. Could you try rephrasing your question or being more specific about what you're looking for?"
         
         response = f"Based on your query '{query}', here's what I found in BigQuery:\n\n"
         
-        for i, result in enumerate(results[:3], 1):  # Show top 3
+        for i, result in enumerate(results[:10], 1):  # Show top 10
             response += f"{i}. **{result['table_name']}**\n"
             response += f"   {result['description']}\n\n"
-        
-        if len(results) > 3:
-            response += f"I found {len(results) - 3} additional relevant table(s). Would you like me to show more details?\n"
         
         return response
