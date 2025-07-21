@@ -33,7 +33,10 @@ class ResponseGenerationAgent(BaseAgent):
             
             if intent == "table_search":
                 response = self._generate_table_search_response(original_query, search_results)
+            elif intent == "schema_inquiry":
+                response = self._generate_schema_response(original_query, search_results)
             else:
+                print (">>>", intent)
                 response = self._generate_general_response(original_query, search_results)
             
             task.output_data = {
@@ -72,6 +75,30 @@ class ResponseGenerationAgent(BaseAgent):
         
         if len(results) > 5:
             response += f"... and {len(results) - 5} more results.\n"
+        
+        return response
+
+
+    def _generate_schema_response(self, query: str, results: List[Dict]) -> str:
+        if not results:
+            return "No schema information found for your query."
+        
+        response = f"Here's the BigQuery schema information for '{query}':\n\n"
+        
+        for result in results:
+            table_name = result['table_name']
+            columns = result.get('columns', 0)
+            
+            response += f"**{table_name}**\n"
+            response += f"- Number of columns: {columns}\n"
+            response += f"- Description: {result['description']}\n"
+            
+            # Add schema details if available
+            if 'schema_analysis' in result:
+                schema = result['schema_analysis']
+                response += f"- Data types: {schema.get('data_types', 'N/A')}\n"
+            
+            response += "\n"
         
         return response
 
